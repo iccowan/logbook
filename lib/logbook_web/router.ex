@@ -1,12 +1,31 @@
 defmodule LogbookWeb.Router do
   use LogbookWeb, :router
 
+  @host :logbook
+        |> Application.compile_env!(LogbookWeb.Endpoint)
+        |> Keyword.fetch!(:url)
+        |> Keyword.fetch!(:host)
+
+  @content_security_policy (case Mix.env() do
+                              :prod ->
+                                "default-src 'self' 'unsafe-eval'" <>
+                                  "connect-src wss://#{@host};" <>
+                                  "img-src 'self' https://*.unsplash.com/ blob:;" <>
+                                  "font-src data:;"
+
+                              _ ->
+                                "default-src 'self' 'unsafe-eval' 'unsafe-inline';" <>
+                                  "connect-src ws://#{@host}:*;" <>
+                                  "img-src 'self' https://*.unsplash.com/ blob: data:;" <>
+                                  "font-src data:;"
+                            end)
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug :put_secure_browser_headers, %{"content-security-policy" => @content_security_policy}
   end
 
   pipeline :api do

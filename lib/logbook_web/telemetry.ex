@@ -1,4 +1,5 @@
 defmodule LogbookWeb.Telemetry do
+  # credo:disable-for-this-file
   use Supervisor
   import Telemetry.Metrics
 
