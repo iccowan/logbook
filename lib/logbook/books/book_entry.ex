@@ -30,17 +30,17 @@ defmodule Logbook.Books.BookEntry do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           date: Date.t(),
           route: String.t(),
           book: Book.t(),
-          book_id: UUID.t(),
+          book_id: Ecto.UUID.t(),
           aircraft: Aircraft.t(),
-          aircraft_id: UUID.t(),
+          aircraft_id: Ecto.UUID.t(),
           airport_from: Airport.t(),
-          apt_from_id: UUID.t(),
+          apt_from_id: Ecto.UUID.t(),
           airport_to: Airport.t(),
-          apt_to_id: UUID.t(),
+          apt_to_id: Ecto.UUID.t(),
           book_entry_data: [BookEntryData.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()

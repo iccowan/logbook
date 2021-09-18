@@ -25,7 +25,7 @@ defmodule Logbook.Users.User do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           first_name: String.t(),
           last_name: String.t(),
           email: String.t(),

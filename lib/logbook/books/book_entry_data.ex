@@ -24,12 +24,12 @@ defmodule Logbook.Books.BookEntryData do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
-          value: Map.t(),
+          id: Ecto.UUID.t(),
+          value: map(),
           book_field: BookField.t(),
-          book_field_id: UUID.t(),
+          book_field_id: Ecto.UUID.t(),
           book_entry: BookEntry.t(),
-          book_entry_id: UUID.t(),
+          book_entry_id: Ecto.UUID.t(),
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }

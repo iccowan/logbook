@@ -5,7 +5,7 @@ defmodule Logbook.Aircraft.AircraftClass do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Logbook.Aircraft.{AircraftType, AircraftCategory}
+  alias Logbook.Aircraft.{AircraftClass, AircraftType, AircraftCategory}
 
   schema "aircraft_class" do
     field :name, :string
@@ -20,12 +20,18 @@ defmodule Logbook.Aircraft.AircraftClass do
   end
 
   @type t :: %__MODULE__{
-          id: Integer.t(),
+          id: integer(),
           name: String.t(),
           aircraft_category: AircraftCategory.t(),
-          aircraft_category_id: Integer.t(),
+          aircraft_category_id: integer(),
           aircraft_types: [AircraftType.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(aircraft_class = %AircraftClass{}, attrs \\ %{}) do
+    aircraft_class
+    |> cast(attrs, [:name, :aircraft_category_id])
+    |> validate_required([:name, :aircraft_category_id])
+  end
 end

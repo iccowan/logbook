@@ -5,7 +5,7 @@ defmodule Logbook.Aircraft.Aircraft do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Logbook.Aircraft.AircraftType
+  alias Logbook.Aircraft.{Aircraft, AircraftType}
   alias Logbook.Airports.Airport
   alias Logbook.Books.BookEntry
 
@@ -30,16 +30,28 @@ defmodule Logbook.Aircraft.Aircraft do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           tail_number: String.t(),
           notes: String.t(),
-          is_favorite: Boolean.t(),
+          is_favorite: boolean(),
           aircraft_type: AircraftType.t(),
-          aircraft_type_id: UUID.t(),
+          aircraft_type_id: Ecto.UUID.t(),
           home_base_airport: Airport.t(),
-          home_base_apt_id: UUID.t(),
+          home_base_apt_id: Ecto.UUID.t(),
           book_entries: [BookEntry.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(aircraft = %Aircraft{}, attrs \\ %{}) do
+    aircraft
+    |> cast(attrs, [
+      :tail_number,
+      :notes,
+      :is_favorite,
+      :aircraft_type_id,
+      :home_base_apt_id
+    ])
+    |> validate_required([:tail_number, :aircraft_type_id])
+  end
 end

@@ -27,13 +27,13 @@ defmodule Logbook.Books.BookField do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           desc: String.t(),
           book_field_type: BookFieldType.t(),
-          type_id: Integer.t(),
+          type_id: integer(),
           book_group: BookGroup.t(),
-          book_group_id: UUID.t(),
+          book_group_id: Ecto.UUID.t(),
           book_entry_data: [BookEntryData.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()

@@ -27,13 +27,13 @@ defmodule Logbook.Airports.Airport do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           code: String.t(),
           name: String.t(),
           location: String.t(),
-          is_favorite: Boolean.t(),
+          is_favorite: boolean(),
           user: User.t(),
-          user_id: UUID.t(),
+          user_id: Ecto.UUID.t(),
           aircraft: [Aircraft.t()],
           book_entries_dep: [BookEntry.t()],
           book_entries_dest: [BookEntry.t()],

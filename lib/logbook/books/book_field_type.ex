@@ -17,7 +17,7 @@ defmodule Logbook.Books.BookFieldType do
   end
 
   @type t :: %__MODULE__{
-          id: Integer.t(),
+          id: integer(),
           name: String.t(),
           desc: String.t(),
           book_fields: [BookField.t()],

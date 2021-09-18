@@ -20,9 +20,9 @@ defmodule Logbook.Books.Book do
   end
 
   @type t :: %__MODULE__{
-          id: UUID.t(),
+          id: Ecto.UUID.t(),
           user: User.t(),
-          user_id: UUID.t(),
+          user_id: Ecto.UUID.t(),
           book_groups: [BookGroup.t()],
           book_entries: [BookEntry.t()],
           inserted_at: NaiveDateTime.t(),
