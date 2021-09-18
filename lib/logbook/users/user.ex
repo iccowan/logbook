@@ -8,6 +8,7 @@ defmodule Logbook.Users.User do
   alias Logbook.Airports.Airport
   alias Logbook.Aircraft.AircraftType
   alias Logbook.Books.Book
+  alias Logbook.Users.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
@@ -36,4 +37,10 @@ defmodule Logbook.Users.User do
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(user = %User{}, attrs \\ %{}) do
+    user
+    |> cast(attrs, [:first_name, :last_name, :email])
+    |> validate_required([:first_name, :last_name, :email])
+  end
 end

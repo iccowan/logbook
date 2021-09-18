@@ -5,6 +5,7 @@ defmodule Logbook.Airports.Airport do
 
   use Ecto.Schema
   import Ecto.Changeset
+  alias Logbook.Airports.Airport
   alias Logbook.Aircraft.Aircraft
   alias Logbook.Users.User
   alias Logbook.Books.BookEntry
@@ -40,4 +41,10 @@ defmodule Logbook.Airports.Airport do
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(airport = %Airport{}, attrs \\ %{}) do
+    airport
+    |> cast(attrs, [:code, :name, :location, :is_favorite, :user_id])
+    |> validate_required([:code, :name, :user_id])
+  end
 end

@@ -5,7 +5,7 @@ defmodule Logbook.Books.BookEntry do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Logbook.Books.{Book, BookEntryData}
+  alias Logbook.Books.{Book, BookEntry, BookEntryData}
   alias Logbook.Aircraft.Aircraft
   alias Logbook.Airports.Airport
 
@@ -45,4 +45,23 @@ defmodule Logbook.Books.BookEntry do
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(book_entry = %BookEntry{}, attrs \\ %{}) do
+    book_entry
+    |> cast(attrs, [
+      :date,
+      :route,
+      :book_id,
+      :aircraft_id,
+      :apt_from_id,
+      :apt_to_id
+    ])
+    |> validate_required([
+      :date,
+      :book_id,
+      :aircraft_id,
+      :apt_from_id,
+      :apt_to_id
+    ])
+  end
 end

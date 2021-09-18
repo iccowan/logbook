@@ -5,7 +5,7 @@ defmodule Logbook.Books.Book do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Logbook.Books.{BookEntry, BookGroup}
+  alias Logbook.Books.{Book, BookEntry, BookGroup}
   alias Logbook.Users.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -28,4 +28,10 @@ defmodule Logbook.Books.Book do
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(book = %Book{}, attrs \\ %{}) do
+    book
+    |> cast(attrs, [:user_id])
+    |> validate_required([:user_id])
+  end
 end

@@ -5,7 +5,7 @@ defmodule Logbook.Books.BookFieldType do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Logbook.Books.BookField
+  alias Logbook.Books.{BookField, BookFieldType}
 
   schema "book_group" do
     field :name, :string
@@ -24,4 +24,10 @@ defmodule Logbook.Books.BookFieldType do
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
+
+  def changeset(book_field_type = %BookFieldType{}, attrs \\ %{}) do
+    book_field_type
+    |> cast(attrs, [:name, :desc])
+    |> validate_required([:name])
+  end
 end
