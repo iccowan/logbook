@@ -23,29 +23,23 @@ jobs:
         # POSTGRES_PASSWORD - superuser password
         postgresql password: postgres
 
+    - name: Cache
+      uses: actions/cache@v2.1.6
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: |
+            deps
+            _build
+        # An explicit key for restoring and saving the cache
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+        restore-keys: ${{ runner.os }}-mix-
+
     - name: Set up Elixir
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
       with:
         elixir-version: '1.12.3' # Define the elixir version [required]
         otp-version: '22.3' # Define the OTP version [required]
-
-    - name: Restore the deps cache
-      uses: actions/cache@v1
-      id: deps-cache
-      with:
-        path: deps
-        key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-deps-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys: |
-          ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-deps-
-
-    - name: Restore the _build cache
-      uses: actions/cache@v1
-      id: build-cache
-      with:
-        path: _build
-        key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-build-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys: |
-          ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-build-
 
     - name: Setup Hex (mix local.hex --force)
       run: mix local.hex --force
