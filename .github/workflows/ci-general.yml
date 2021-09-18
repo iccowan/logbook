@@ -33,7 +33,8 @@ jobs:
         # An explicit key for restoring and saving the cache
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
-        restore-keys: ${{ runner.os }}-mix-
+        restore-keys: |
+            ${{ runner.os }}-mix-
 
     - name: Set up Elixir
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
