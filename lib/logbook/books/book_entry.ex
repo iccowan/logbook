@@ -19,7 +19,11 @@ defmodule Logbook.Books.BookEntry do
 
     belongs_to :book, Book, foreign_key: :book_id, type: :binary_id
     belongs_to :aircraft, Aircraft, foreign_key: :aircraft_id, type: :binary_id
-    belongs_to :airport_from, Airport, foreign_key: :apt_from_id, type: :binary_id
+
+    belongs_to :airport_from, Airport,
+      foreign_key: :apt_from_id,
+      type: :binary_id
+
     belongs_to :airport_to, Airport, foreign_key: :apt_to_id, type: :binary_id
 
     has_many :book_entry_data, BookEntryData

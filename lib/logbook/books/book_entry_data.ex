@@ -14,7 +14,12 @@ defmodule Logbook.Books.BookEntryData do
 
     timestamps()
 
-    belongs_to :book_field, BookField, foreign_key: :book_field_id, type: :binary_id
-    belongs_to :book_entry, BookEntry, foreign_key: :book_entry_id, type: :binary_id
+    belongs_to :book_field, BookField,
+      foreign_key: :book_field_id,
+      type: :binary_id
+
+    belongs_to :book_entry, BookEntry,
+      foreign_key: :book_entry_id,
+      type: :binary_id
   end
 end

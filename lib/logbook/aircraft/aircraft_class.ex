@@ -12,7 +12,9 @@ defmodule Logbook.Aircraft.AircraftClass do
 
     timestamps()
 
-    belongs_to :aircraft_category, AircraftCategory, foreign_key: :aircraft_category_id, type: :integer
+    belongs_to :aircraft_category, AircraftCategory,
+      foreign_key: :aircraft_category_id,
+      type: :integer
 
     has_many :aircraft_types, AircraftType
   end

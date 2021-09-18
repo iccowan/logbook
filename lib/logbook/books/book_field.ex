@@ -15,8 +15,13 @@ defmodule Logbook.Books.BookField do
 
     timestamps()
 
-    belongs_to :book_field_type, BookFieldType, foreign_key: :type_id, type: :integer
-    belongs_to :book_group, BookGroup, foreign_key: :book_group_id, type: :binary_id
+    belongs_to :book_field_type, BookFieldType,
+      foreign_key: :type_id,
+      type: :integer
+
+    belongs_to :book_group, BookGroup,
+      foreign_key: :book_group_id,
+      type: :binary_id
 
     has_many :book_entry_data, BookEntryData
   end
