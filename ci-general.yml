@@ -1,0 +1,59 @@
+name: Logbook General CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Elixir
+      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      with:
+        elixir-version: '1.12.3' # Define the elixir version [required]
+        otp-version: '22.3' # Define the OTP version [required]
+
+    - name: Restore the deps cache
+      uses: actions/cache@v1
+      id: deps-cache
+      with:
+        path: deps
+        key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-deps-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-deps-
+    - name: Restore the _build cache
+      uses: actions/cache@v1
+      id: build-cache
+      with:
+        path: _build
+        key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-build-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-build-
+
+    - name: Setup Hex (mix local.hex --force)
+      run: mix local.hex --force
+
+    - name: Get Dependencies (mix deps.get)
+      run: mix deps.get
+
+    - name: Setup Rebar (mix local.rebar --force)
+      run: mix local.rebar --force
+
+    - name: Audit Dependencies (mix deps.audit)
+      run: mix deps.audit
+
+    - name: Sobelow Security Check (mix sobelow --verbose --exit)
+      run: mix sobelow --verbose --exit
+
+    - name: Credo Code Analysis (mix credo --all)
+      run: mix credo --all --verbose
+
+    - name: Dialyzer Code Analysis (mix dialyzer)
+      run: mix dialyzer
+
+    - name: Run Tests (mix test)
+      run: mix test
