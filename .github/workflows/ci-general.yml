@@ -73,10 +73,9 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_CHANNEL: logbook-ci
         SLACK_USERNAME: GitHub Actions
-        SLACK_ICON_EMOJI: ':robot_face:'
+        SLACK_ICON_EMOJI: ':technologist:'
         SLACK_COLOR: ${{ job.status }}
-        SLACK_TITLE: Build PASSING
-        SLACK_MESSAGE: ':white_check_mark: Post Content'
+        SLACK_TITLE: ':white_check_mark: Build PASSING'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
     
     - name: notify slack on fail
@@ -86,7 +85,7 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_CHANNEL: logbook-ci
         SLACK_USERNAME: GitHub Actions
-        SLACK_ICON_EMOJI: ':robot_face:'
+        SLACK_ICON_EMOJI: ':technologist:'
         SLACK_COLOR: ${{ job.status }}
-        SLACK_TITLE: ':x: Post Content'
+        SLACK_TITLE: ':x: Build FAILING'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
