@@ -6,7 +6,7 @@ defmodule LogbookWeb.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug :put_secure_browser_headers, %{"content-security-policy" => @content_security_policy}
   end
 
   pipeline :api do

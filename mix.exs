@@ -44,7 +44,11 @@ defmodule Logbook.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:mix_audit, "~> 0.1", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.11", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 
@@ -57,6 +61,8 @@ defmodule Logbook.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      quality: ["format", "dialyzer", "credo --all --verbose", "deps.audit", "sobelow --verbose"],
+      "commit.prepare": ["format", "quality", "test"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
