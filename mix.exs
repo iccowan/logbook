@@ -61,7 +61,13 @@ defmodule Logbook.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
-      quality: ["format", "dialyzer", "credo --all --verbose", "deps.audit", "sobelow --verbose"],
+      quality: [
+        "format",
+        "dialyzer",
+        "credo --all --verbose",
+        "deps.audit",
+        "sobelow --verbose"
+      ],
       "commit.prepare": ["format", "quality", "test"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],

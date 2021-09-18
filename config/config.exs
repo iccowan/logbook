@@ -13,8 +13,13 @@ config :logbook,
 # Configures the endpoint
 config :logbook, LogbookWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "Z+j+HVTgKIsXG4fTEb5z6zFXQA968wgIqW8CaWnP8pvulz3gB2kYdl6WmDjCkRkR",
-  render_errors: [view: LogbookWeb.ErrorView, accepts: ~w(html json), layout: false],
+  secret_key_base:
+    "Z+j+HVTgKIsXG4fTEb5z6zFXQA968wgIqW8CaWnP8pvulz3gB2kYdl6WmDjCkRkR",
+  render_errors: [
+    view: LogbookWeb.ErrorView,
+    accepts: ~w(html json),
+    layout: false
+  ],
   pubsub_server: Logbook.PubSub,
   live_view: [signing_salt: "CWKD3VE6"]
 
