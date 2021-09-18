@@ -5,8 +5,4 @@ defmodule LogbookWeb.PageControllerTest do
     conn = get(conn, "/")
     assert html_response(conn, 200) =~ "Welcome to Phoenix!"
   end
-
-  test "fail" do
-    assert false == true
-  end
 end
