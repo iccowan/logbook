@@ -22,4 +22,15 @@ defmodule Logbook.Books.BookEntryData do
       foreign_key: :book_entry_id,
       type: :binary_id
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          value: Map.t(),
+          book_field: BookField.t(),
+          book_field_id: UUID.t(),
+          book_entry: BookEntry.t(),
+          book_entry_id: UUID.t(),
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

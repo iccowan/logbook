@@ -28,4 +28,18 @@ defmodule Logbook.Aircraft.Aircraft do
 
     has_many :book_entries, BookEntry
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          tail_number: String.t(),
+          notes: String.t(),
+          is_favorite: Boolean.t(),
+          aircraft_type: AircraftType.t(),
+          aircraft_type_id: UUID.t(),
+          home_base_airport: Airport.t(),
+          home_base_apt_id: UUID.t(),
+          book_entries: [BookEntry.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

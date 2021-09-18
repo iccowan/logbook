@@ -23,4 +23,17 @@ defmodule Logbook.Users.User do
     has_many :aircraft_types, AircraftType
     has_many :books, Book
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          first_name: String.t(),
+          last_name: String.t(),
+          email: String.t(),
+          password: String.t(),
+          airports: [Airport.t()],
+          aircraft_types: [AircraftType.t()],
+          books: [Book.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

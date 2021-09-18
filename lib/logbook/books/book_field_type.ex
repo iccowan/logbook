@@ -15,4 +15,13 @@ defmodule Logbook.Books.BookFieldType do
 
     has_many :book_fields, BookField, foreign_key: :type_id
   end
+
+  @type t :: %__MODULE__{
+          id: Integer.t(),
+          name: String.t(),
+          desc: String.t(),
+          book_fields: [BookField.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

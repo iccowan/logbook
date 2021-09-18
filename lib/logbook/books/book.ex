@@ -18,4 +18,14 @@ defmodule Logbook.Books.Book do
     has_many :book_groups, BookGroup
     has_many :book_entries, BookEntry
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          user: User.t(),
+          user_id: UUID.t(),
+          book_groups: [BookGroup.t()],
+          book_entries: [BookEntry.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

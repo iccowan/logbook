@@ -22,7 +22,22 @@ defmodule Logbook.Airports.Airport do
     belongs_to :user, User, foreign_key: :user_id, type: :binary_id
 
     has_many :aircraft, Aircraft, foreign_key: :aircraft_type_id
-    has_many :book_entries_arr, BookEntry, foreign_key: :apt_from_id
+    has_many :book_entries_dep, BookEntry, foreign_key: :apt_from_id
     has_many :book_entries_dest, BookEntry, foreign_key: :apt_to_id
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          code: String.t(),
+          name: String.t(),
+          location: String.t(),
+          is_favorite: Boolean.t(),
+          user: User.t(),
+          user_id: UUID.t(),
+          aircraft: [Aircraft.t()],
+          book_entries_dep: [BookEntry.t()],
+          book_entries_dest: [BookEntry.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

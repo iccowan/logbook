@@ -14,4 +14,11 @@ defmodule Logbook.Aircraft.AircraftCategory do
 
     has_many :aircraft_classes, AircraftClass
   end
+
+  @type t :: %__MODULE__{
+          id: Integer.t(),
+          name: String.t(),
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end

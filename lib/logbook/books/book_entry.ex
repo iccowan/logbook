@@ -28,4 +28,21 @@ defmodule Logbook.Books.BookEntry do
 
     has_many :book_entry_data, BookEntryData
   end
+
+  @type t :: %__MODULE__{
+          id: UUID.t(),
+          date: Date.t(),
+          route: String.t(),
+          book: Book.t(),
+          book_id: UUID.t(),
+          aircraft: Aircraft.t(),
+          aircraft_id: UUID.t(),
+          airport_from: Airport.t(),
+          apt_from_id: UUID.t(),
+          airport_to: Airport.t(),
+          apt_to_id: UUID.t(),
+          book_entry_data: [BookEntryData.t()],
+          inserted_at: NaiveDateTime.t(),
+          updated_at: NaiveDateTime.t()
+        }
 end
