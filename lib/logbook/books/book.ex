@@ -11,6 +11,8 @@ defmodule Logbook.Books.Book do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "books" do
+    field :name, :string
+
     belongs_to :user, User, foreign_key: :user_id, type: :binary_id
 
     timestamps()
@@ -31,7 +33,7 @@ defmodule Logbook.Books.Book do
 
   def changeset(book = %Book{}, attrs \\ %{}) do
     book
-    |> cast(attrs, [:user_id])
-    |> validate_required([:user_id])
+    |> cast(attrs, [:string, :user_id])
+    |> validate_required([:string, :user_id])
   end
 end
