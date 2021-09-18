@@ -76,7 +76,7 @@ jobs:
       run: mix test
       
     - name: notify slack on success
-      if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/ian/ci/master' || github.ref == 'refs/heads/prod') }}
+      if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -85,7 +85,7 @@ jobs:
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
     
     - name: notify slack on fail
-      if: ${{ failure() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/ian/ci/master' || github.ref == 'refs/heads/prod') }}
+      if: ${{ failure() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
