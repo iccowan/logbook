@@ -9,7 +9,7 @@ defmodule Logbook.Books.BookField do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "book_field" do
+  schema "book_fields" do
     field :name, :string
     field :desc, :string
 

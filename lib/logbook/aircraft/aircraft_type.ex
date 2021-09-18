@@ -10,7 +10,7 @@ defmodule Logbook.Aircraft.AircraftType do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "aircraft_type" do
+  schema "aircraft_types" do
     field :name, :string
     field :make, :string
     field :model, :string

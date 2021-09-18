@@ -12,7 +12,7 @@ defmodule Logbook.Users.User do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "user" do
+  schema "users" do
     field :first_name, :string
     field :last_name, :string
     field :email, :string

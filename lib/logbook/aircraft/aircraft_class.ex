@@ -7,7 +7,7 @@ defmodule Logbook.Aircraft.AircraftClass do
   import Ecto.Changeset
   alias Logbook.Aircraft.{AircraftClass, AircraftType, AircraftCategory}
 
-  schema "aircraft_class" do
+  schema "aircraft_classes" do
     field :name, :string
 
     timestamps()

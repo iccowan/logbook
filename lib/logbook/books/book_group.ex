@@ -9,7 +9,7 @@ defmodule Logbook.Books.BookGroup do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "book_group" do
+  schema "book_groups" do
     field :name, :string
 
     timestamps()

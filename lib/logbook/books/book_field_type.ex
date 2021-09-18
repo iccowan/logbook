@@ -7,7 +7,7 @@ defmodule Logbook.Books.BookFieldType do
   import Ecto.Changeset
   alias Logbook.Books.{BookField, BookFieldType}
 
-  schema "book_group" do
+  schema "book_field_types" do
     field :name, :string
     field :desc, :string
 

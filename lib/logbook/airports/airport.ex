@@ -12,7 +12,7 @@ defmodule Logbook.Airports.Airport do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "airport" do
+  schema "airports" do
     field :code, :string
     field :name, :string
     field :location, :string

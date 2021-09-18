@@ -11,7 +11,7 @@ defmodule Logbook.Books.BookEntry do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "book_entry" do
+  schema "book_entries" do
     field :date, :date
     field :route, :string
 
