@@ -1,6 +1,6 @@
 name: build and test
 
-on: [push]
+on: push
 
 jobs:
   build:
@@ -10,6 +10,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: notify slack that build has initiated
+      if: ${{ github.ref == 'refs/heads/master' }} || ${{ github.ref == 'refs/heads/ian/ci/add_slack_notification' }} || ${{ github.ref == 'refs/heads/prod' }}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: '#0000FF'
+        SLACK_TITLE: ':checkered_flag: Build INITIATED'
+        SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
 
     - name: setup postgresql
       # You may pin to the exact commit or the version.
@@ -67,25 +76,19 @@ jobs:
       run: mix test
       
     - name: notify slack on success
-      if: success()
+      if: success() && (${{ github.ref == 'refs/heads/master' }} || ${{ github.ref == 'refs/heads/develop' }} || ${{ github.ref == 'refs/heads/prod' }})
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: logbook-ci
-        SLACK_USERNAME: GitHub Actions
-        SLACK_ICON_EMOJI: ':technologist:'
         SLACK_COLOR: ${{ job.status }}
         SLACK_TITLE: ':white_check_mark: Build PASSING'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
     
     - name: notify slack on fail
-      if: failure()
+      if: failure() && (${{ github.ref == 'refs/heads/master' }} || ${{ github.ref == 'refs/heads/develop' }} || ${{ github.ref == 'refs/heads/prod' }})
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: logbook-ci
-        SLACK_USERNAME: GitHub Actions
-        SLACK_ICON_EMOJI: ':technologist:'
         SLACK_COLOR: ${{ job.status }}
         SLACK_TITLE: ':x: Build FAILING'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
