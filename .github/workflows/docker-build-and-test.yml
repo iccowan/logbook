@@ -24,6 +24,18 @@ jobs:
         SLACK_TITLE: ':checkered_flag: Build INITIATED'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
 
+    - name: load/save cache
+      uses: actions/cache@v2.1.6
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: |
+            priv/plts
+        # An explicit key for restoring and saving the cache
+        key: ${{ runner.os }}-v1-mix-${{ hashFiles('**/mix.lock') }}
+        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+        restore-keys: |
+            ${{ runner.os }}-v1-mix-
+
     - name: build docker container
       run: docker-compose build
 
@@ -32,19 +44,6 @@ jobs:
            docker create -ti --name web elixir:1.12.3 bash
            docker cp web:/app/. .
            docker rm -f web
-
-    - name: load/save cache
-      uses: actions/cache@v2.1.6
-      with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: |
-            deps
-            _build
-        # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
-        restore-keys: |
-            ${{ runner.os }}-mix-
 
     - name: set up elixir for non-docker checks
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24

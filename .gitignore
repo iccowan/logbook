@@ -35,3 +35,7 @@ npm-debug.log
 
 # Ignore the environment variables file
 .envrc
+
+# Ignore plt files
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
