@@ -26,7 +26,7 @@ defmodule Logbook.Aircraft.AircraftType do
 
     belongs_to :aircraft_class, AircraftClass,
       foreign_key: :aircraft_class_id,
-      type: :integer
+      type: :id
 
     has_many :aircraft, Aircraft
   end

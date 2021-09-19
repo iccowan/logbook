@@ -17,7 +17,7 @@ defmodule Logbook.Books.BookField do
 
     belongs_to :book_field_type, BookFieldType,
       foreign_key: :type_id,
-      type: :integer
+      type: :id
 
     belongs_to :book_group, BookGroup,
       foreign_key: :book_group_id,
