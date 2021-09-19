@@ -4,7 +4,6 @@ defmodule Logbook.UsersTestHelpers do
   """
 
   alias Logbook.Users
-  alias Logbook.{AircraftTestHelpers, AirportsTestHelpers, BooksTestHelpers}
 
   def create_user(overrides \\ %{}) do
     %{

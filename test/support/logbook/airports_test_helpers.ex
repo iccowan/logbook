@@ -4,7 +4,7 @@ defmodule Logbook.AirportsTestHelpers do
   """
 
   alias Logbook.Airports
-  alias Logbook.{AircraftTestHelpers, BooksTestHelpers, UsersTestHelpers}
+  alias Logbook.{UsersTestHelpers}
 
   defdelegate create_user(overrides \\ %{}), to: UsersTestHelpers
   defdelegate create_user!(overrides \\ %{}), to: UsersTestHelpers

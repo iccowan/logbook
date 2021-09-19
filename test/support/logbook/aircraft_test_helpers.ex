@@ -4,7 +4,7 @@ defmodule Logbook.AircraftTestHelpers do
   """
 
   alias Logbook.Aircraft
-  alias Logbook.{AirportsTestHelpers, BooksTestHelpers, UsersTestHelpers}
+  alias Logbook.{AirportsTestHelpers, UsersTestHelpers}
 
   defdelegate create_airport(overrides \\ %{}), to: AirportsTestHelpers
   defdelegate create_airport!(overrides \\ %{}), to: AirportsTestHelpers
@@ -101,7 +101,7 @@ defmodule Logbook.AircraftTestHelpers do
   end
 
   def create_aircraft_category!(overrides \\ %{}) do
-    create_aircraft_category()
+    create_aircraft_category(overrides)
     |> elem(1)
   end
 
