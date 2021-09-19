@@ -367,34 +367,56 @@ defmodule Logbook.AircraftTest do
   end
 
   test "aircraft tail_number updated on update", %{aircraft: aircraft} do
-    %Aircraft.Aircraft{id: ac_id} = Helpers.update_aircraft!(aircraft, %{tail_number: "N16554"})
-    %Aircraft.Aircraft{tail_number: tail_number} = Repo.get(Aircraft.Aircraft, ac_id)
+    %Aircraft.Aircraft{id: ac_id} =
+      Helpers.update_aircraft!(aircraft, %{tail_number: "N16554"})
+
+    %Aircraft.Aircraft{tail_number: tail_number} =
+      Repo.get(Aircraft.Aircraft, ac_id)
+
     assert tail_number == "N16554"
   end
 
   test "aircraft notes updated on update", %{aircraft: aircraft} do
-    %Aircraft.Aircraft{id: ac_id} = Helpers.update_aircraft!(aircraft, %{notes: "Maybe we decided to add some notes..."})
+    %Aircraft.Aircraft{id: ac_id} =
+      Helpers.update_aircraft!(aircraft, %{
+        notes: "Maybe we decided to add some notes..."
+      })
+
     %Aircraft.Aircraft{notes: notes} = Repo.get(Aircraft.Aircraft, ac_id)
     assert notes == "Maybe we decided to add some notes..."
   end
 
   test "aircraft is_favorite updated on update", %{aircraft: aircraft} do
-    %Aircraft.Aircraft{id: ac_id} = Helpers.update_aircraft!(aircraft, %{is_favorite: true})
-    %Aircraft.Aircraft{is_favorite: is_favorite} = Repo.get(Aircraft.Aircraft, ac_id)
+    %Aircraft.Aircraft{id: ac_id} =
+      Helpers.update_aircraft!(aircraft, %{is_favorite: true})
+
+    %Aircraft.Aircraft{is_favorite: is_favorite} =
+      Repo.get(Aircraft.Aircraft, ac_id)
+
     assert is_favorite == true
   end
 
   test "aircraft aircraft_type_id updated on update", %{aircraft: aircraft} do
     %Aircraft.AircraftType{id: new_id} = Helpers.create_aircraft_type!()
-    %Aircraft.Aircraft{id: ac_id} = Helpers.update_aircraft!(aircraft, %{aircraft_type_id: new_id})
-    %Aircraft.Aircraft{aircraft_type_id: id} = Repo.get(Aircraft.Aircraft, ac_id)
+
+    %Aircraft.Aircraft{id: ac_id} =
+      Helpers.update_aircraft!(aircraft, %{aircraft_type_id: new_id})
+
+    %Aircraft.Aircraft{aircraft_type_id: id} =
+      Repo.get(Aircraft.Aircraft, ac_id)
+
     assert id == new_id
   end
 
   test "aircraft home_base_apt_id updated on update", %{aircraft: aircraft} do
     %Airports.Airport{id: new_id} = Helpers.create_airport!()
-    %Aircraft.Aircraft{id: ac_id} = Helpers.update_aircraft!(aircraft, %{home_base_apt_id: new_id})
-    %Aircraft.Aircraft{home_base_apt_id: id} = Repo.get(Aircraft.Aircraft, ac_id)
+
+    %Aircraft.Aircraft{id: ac_id} =
+      Helpers.update_aircraft!(aircraft, %{home_base_apt_id: new_id})
+
+    %Aircraft.Aircraft{home_base_apt_id: id} =
+      Repo.get(Aircraft.Aircraft, ac_id)
+
     assert id == new_id
   end
 end
