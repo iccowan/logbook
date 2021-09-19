@@ -9,6 +9,10 @@ jobs:
 
     name: build and test docker
     runs-on: ubuntu-latest
+    env:
+        POSTGRES_USER: postgres_test
+        POSTGRES_PASSWORD: postgres_test
+        POSTGRES_HOST: db
 
     steps:
     - uses: actions/checkout@v2
@@ -22,18 +26,18 @@ jobs:
         SLACK_TITLE: ':checkered_flag: Build INITIATED'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
 
-    - name: load/save cache
-      uses: actions/cache@v2.1.6
-      with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: |
-            deps
-            _build
-        # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
-        restore-keys: |
-            ${{ runner.os }}-mix-
+    #- name: load/save cache
+    #  uses: actions/cache@v2.1.6
+    #  with:
+    #    # A list of files, directories, and wildcard patterns to cache and restore
+    #    path: |
+    #        deps
+    #        _build
+    #    # An explicit key for restoring and saving the cache
+    #    key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+    #    # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+    #    restore-keys: |
+    #        ${{ runner.os }}-mix-
 
     - name: set up elixir for non-docker checks
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
@@ -55,17 +59,9 @@ jobs:
 
     - name: build docker image
       run: docker-compose build
-      env:
-          POSTGRES_USER: postgres_test
-          POSTGRES_PASSWORD: postgres_test
-          POSTGRES_HOST: db
 
     - name: run tests with docker (docker-compose run web mix test)
       run: docker-compose run web mix test
-      env:
-          POSTGRES_USER: postgres_test
-          POSTGRES_PASSWORD: postgres_test
-          POSTGRES_HOST: db
 
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
