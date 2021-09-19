@@ -42,8 +42,10 @@ jobs:
     - name: build docker image
       run: docker-compose build
 
-    - name: enter docker container
-      run: docker-compose run web /bin/bash
+    - name: copy files from docker image
+      run: docker create -ti --name web elixir:1.12.3 bash
+      run: docker cp web:/app/. .
+      run: docker rm -f web
 
     #- name: set up elixir for non-docker checks
     #  uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
