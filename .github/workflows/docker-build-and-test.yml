@@ -1,9 +1,7 @@
 name: build and test
 
-on:
-    push:
-        branches:
-            - ian/docker
+on: push
+
 jobs:
   build:
 
