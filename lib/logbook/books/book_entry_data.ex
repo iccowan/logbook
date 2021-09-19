@@ -37,7 +37,7 @@ defmodule Logbook.Books.BookEntryData do
 
   def changeset(book_entry_data = %BookEntryData{}, attrs \\ %{}) do
     book_entry_data
-    |> cast(attrs, [:book_field_id, :book_entry_id])
-    |> validate_required([:book_field_id, :book_entry_id])
+    |> cast(attrs, [:book_field_id, :book_entry_id, :value])
+    |> validate_required([:book_field_id, :book_entry_id, :value])
   end
 end

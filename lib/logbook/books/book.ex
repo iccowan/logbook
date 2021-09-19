@@ -23,6 +23,7 @@ defmodule Logbook.Books.Book do
 
   @type t :: %__MODULE__{
           id: Ecto.UUID.t(),
+          name: String.t(),
           user: User.t(),
           user_id: Ecto.UUID.t(),
           book_groups: [BookGroup.t()],
