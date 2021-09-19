@@ -48,11 +48,11 @@ jobs:
            docker cp web:/app/. .
            docker rm -f web
 
-    #- name: set up elixir for non-docker checks
-    #  uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
-    #  with:
-    #    elixir-version: '1.12.3' # Define the elixir version [required]
-    #    otp-version: '22.3' # Define the OTP version [required]
+    - name: set up elixir for non-docker checks
+      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      with:
+        elixir-version: '1.12.3' # Define the elixir version [required]
+        otp-version: '22.3' # Define the OTP version [required]
 
     - name: audit dependencies (mix deps.audit)
       run: mix deps.audit
