@@ -1,9 +1,6 @@
-name: build and test
+name: docker build and test
+on: push
 
-on:
-    push:
-        branches:
-            - ian/docker
 jobs:
   build:
 
@@ -31,18 +28,17 @@ jobs:
       with:
         # A list of files, directories, and wildcard patterns to cache and restore
         path: |
-            deps
-            _build
+            priv/plts
         # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-v1-mix-${{ hashFiles('**/mix.lock') }}
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
         restore-keys: |
-            ${{ runner.os }}-mix-
+            ${{ runner.os }}-v1-mix-
 
-    - name: build docker image
+    - name: build docker container
       run: docker-compose build
 
-    - name: copy files from docker image
+    - name: copy compiled files from docker container
       run: |
            docker create -ti --name web elixir:1.12.3 bash
            docker cp web:/app/. .

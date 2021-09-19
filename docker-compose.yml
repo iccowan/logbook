@@ -4,7 +4,7 @@ services:
         image: elixir:1.12.3
         build: .
         ports:
-            - "80:80"
+            - "4000:4000"
         environment:
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
