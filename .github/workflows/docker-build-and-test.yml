@@ -27,8 +27,11 @@ jobs:
     - name: build docker container
       run: docker-compose build
 
-    - name: create plt_files folder for caching
-      run: mkdir plt_files
+    - name: copy files from docker container
+      run: |
+           docker create -ti --name web elixir:1.12.3 bash
+           docker cp web:/app/. .
+           docker rm -f web
 
     - name: load/save cache
       uses: actions/cache@v2.1.6
@@ -37,18 +40,11 @@ jobs:
         path: |
             deps
             _build
-            plt_files
         # An explicit key for restoring and saving the cache
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
         restore-keys: |
             ${{ runner.os }}-mix-
-
-    - name: copy files from docker container
-      run: |
-           docker create -ti --name web elixir:1.12.3 bash
-           docker cp web:/app/. .
-           docker rm -f web
 
     - name: set up elixir for non-docker checks
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
@@ -65,14 +61,8 @@ jobs:
     - name: credo code analysis (mix credo --all)
       run: mix credo --all --verbose
 
-    - name: move plt files from caching
-      run: mv plt_files/* _build/.
-
     - name: dialyzer code analysis (mix dialyzer)
       run: mix dialyzer
-
-    - name: move plt files for caching
-      run: mv _build/*.plt plt_files/.
 
     - name: run tests with docker (docker-compose run web mix test)
       run: docker-compose run web mix test
