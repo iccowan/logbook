@@ -1,0 +1,88 @@
+name: build and test
+
+on:
+    push:
+        branches:
+            - ian/docker
+jobs:
+  build:
+
+    name: build and test docker
+    runs-on: ubuntu-latest
+    env:
+        POSTGRES_USER: postgres_test
+        POSTGRES_PASSWORD: postgres_test
+        POSTGRES_HOST: db
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: notify slack that build has initiated
+      if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod' }}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: '#0000FF'
+        SLACK_TITLE: ':checkered_flag: Build INITIATED'
+        SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
+
+    - name: load/save cache
+      uses: actions/cache@v2.1.6
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: |
+            deps
+            _build
+        # An explicit key for restoring and saving the cache
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+        restore-keys: |
+            ${{ runner.os }}-mix-
+
+    - name: build docker image
+      run: docker-compose build
+
+    - name: copy files from docker image
+      run: |
+           docker create -ti --name web elixir:1.12.3 bash
+           docker cp web:/app/. .
+           docker rm -f web
+
+    - name: set up elixir for non-docker checks
+      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      with:
+        elixir-version: '1.12.3' # Define the elixir version [required]
+        otp-version: '24.0' # Define the OTP version [required]
+
+    - name: audit dependencies (mix deps.audit)
+      run: mix deps.audit
+
+    - name: sobelow security check (mix sobelow --verbose --exit)
+      run: mix sobelow --verbose --exit
+
+    - name: credo code analysis (mix credo --all)
+      run: mix credo --all --verbose
+
+    - name: dialyzer code analysis (mix dialyzer)
+      run: mix dialyzer
+
+    - name: run tests with docker (docker-compose run web mix test)
+      run: docker-compose run web mix test
+
+    - name: notify slack on success
+      if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_TITLE: ':white_check_mark: Build PASSING'
+        SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
+
+    - name: notify slack on fail
+      if: ${{ failure() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_TITLE: ':x: Build FAILING'
+        SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'

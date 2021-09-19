@@ -2,10 +2,10 @@ use Mix.Config
 
 # Configure your database
 config :logbook, Logbook.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASSWORD"),
   database: "logbook_dev",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
