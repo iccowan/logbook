@@ -24,6 +24,9 @@ jobs:
         SLACK_TITLE: ':checkered_flag: Build INITIATED'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
 
+    - name: build docker image
+      run: docker-compose build
+
     - name: load/save cache
       uses: actions/cache@v2.1.6
       with:
@@ -36,9 +39,6 @@ jobs:
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
         restore-keys: |
             ${{ runner.os }}-mix-
-
-    - name: build docker image
-      run: docker-compose build
 
     - name: copy files from docker image
       run: |
