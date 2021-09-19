@@ -24,7 +24,7 @@ jobs:
         SLACK_TITLE: ':checkered_flag: Build INITIATED'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
 
-    - name: build docker image
+    - name: build docker container
       run: docker-compose build
 
     - name: load/save cache
@@ -40,7 +40,7 @@ jobs:
         restore-keys: |
             ${{ runner.os }}-mix-
 
-    - name: copy files from docker image
+    - name: copy files from docker container
       run: |
            docker create -ti --name web elixir:1.12.3 bash
            docker cp web:/app/. .
