@@ -1,4 +1,4 @@
-name: build and test
+name: docker build and test
 on: push
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
     - name: build docker container
       run: docker-compose build
 
-    - name: copy files from docker container
+    - name: copy compiled files from docker container
       run: |
            docker create -ti --name web elixir:1.12.3 bash
            docker cp web:/app/. .
