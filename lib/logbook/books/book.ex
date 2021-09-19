@@ -33,7 +33,7 @@ defmodule Logbook.Books.Book do
 
   def changeset(book = %Book{}, attrs \\ %{}) do
     book
-    |> cast(attrs, [:string, :user_id])
-    |> validate_required([:string, :user_id])
+    |> cast(attrs, [:name, :user_id])
+    |> validate_required([:name, :user_id])
   end
 end
