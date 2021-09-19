@@ -66,6 +66,9 @@ jobs:
     - name: run tests with docker (docker-compose run web mix test)
       run: mix test
 
+    - name: exit docker container
+      run: exit
+
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
       uses: rtCamp/action-slack-notify@v2
