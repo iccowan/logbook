@@ -37,29 +37,30 @@ jobs:
 
     - name: build docker image
       run: docker-compose build
+      env:
+          POSTGRES_USER: postgres_test
+          POSTGRES_PASSWORD: postgres_test
+          POSTGRES_HOST: db
 
-    - name: set up hex (mix local.hex --force)
-      run: docker-compose run web mix local.hex --force
-
-    - name: set up rebar (mix local.rebar --force)
-      run: docker-compose run web mix local.rebar --force
-
-    - name: get dependencies (mix deps.get)
-      run: docker-compose run web mix deps.get
+    - name: set up elixir for non-docker checks
+      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      with:
+        elixir-version: '1.12.3' # Define the elixir version [required]
+        otp-version: '22.3' # Define the OTP version [required]
 
     - name: audit dependencies (mix deps.audit)
-      run: docker-compose run web mix deps.audit
+      run: mix deps.audit
 
     - name: sobelow security check (mix sobelow --verbose --exit)
-      run: docker-compose run web mix sobelow --verbose --exit
+      run: mix sobelow --verbose --exit
 
     - name: credo code analysis (mix credo --all)
-      run: docker-compose run web mix credo --all --verbose
+      run: mix credo --all --verbose
 
     - name: dialyzer code analysis (mix dialyzer)
-      run: docker-compose run web mix dialyzer
+      run: mix dialyzer
 
-    - name: run tests (mix test)
+    - name: run tests with docker (mix test)
       run: docker-compose run web mix test
 
     - name: notify slack on success
