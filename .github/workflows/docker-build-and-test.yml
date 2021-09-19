@@ -35,13 +35,6 @@ jobs:
         restore-keys: |
             ${{ runner.os }}-mix-
 
-    - name: build docker image
-      run: docker-compose build
-      env:
-          POSTGRES_USER: postgres_test
-          POSTGRES_PASSWORD: postgres_test
-          POSTGRES_HOST: db
-
     - name: set up elixir for non-docker checks
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
       with:
@@ -60,8 +53,19 @@ jobs:
     - name: dialyzer code analysis (mix dialyzer)
       run: mix dialyzer
 
-    - name: run tests with docker (mix test)
+    - name: build docker image
+      run: docker-compose build
+      env:
+          POSTGRES_USER: postgres_test
+          POSTGRES_PASSWORD: postgres_test
+          POSTGRES_HOST: db
+
+    - name: run tests with docker (docker-compose run web mix test)
       run: docker-compose run web mix test
+      env:
+          POSTGRES_USER: postgres_test
+          POSTGRES_PASSWORD: postgres_test
+          POSTGRES_HOST: db
 
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
