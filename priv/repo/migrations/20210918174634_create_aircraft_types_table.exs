@@ -5,7 +5,7 @@ defmodule Logbook.Repo.Migrations.CreateAircraftTypesTable do
     create table(:aircraft_types, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :user_id, references(:users, type: :binary_id), null: false
-      add :aircraft_class_id, references(:aircraft_classes, type: :bigint)
+      add :aircraft_class_id, references(:aircraft_classes, type: :id)
 
       add :name, :string, null: false
       add :make, :string

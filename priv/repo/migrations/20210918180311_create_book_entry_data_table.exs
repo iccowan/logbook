@@ -8,6 +8,8 @@ defmodule Logbook.Repo.Migrations.CreateBookEntryDataTable do
       add :book_entry_id, references(:book_entries, type: :binary_id), null: false
 
       add :value, :map, null: false
+
+      timestamps()
     end
   end
 end

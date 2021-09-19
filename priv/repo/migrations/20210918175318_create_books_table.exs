@@ -6,6 +6,8 @@ defmodule Logbook.Repo.Migrations.CreateBooksTable do
       add :id, :binary_id, primary_key: true
       add :user_id, references(:users, type: :binary_id), null: false
 
+      add :name, :string, null: false
+
       timestamps()
     end
   end
