@@ -27,6 +27,9 @@ jobs:
     - name: build docker container
       run: docker-compose build
 
+    - name: create plt_files folder for caching
+      run: mkdir plt_files
+
     - name: load/save cache
       uses: actions/cache@v2.1.6
       with:
@@ -34,6 +37,7 @@ jobs:
         path: |
             deps
             _build
+            plt_files
         # An explicit key for restoring and saving the cache
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
@@ -61,8 +65,14 @@ jobs:
     - name: credo code analysis (mix credo --all)
       run: mix credo --all --verbose
 
+    - name: move plt files from caching
+      run: mv plt_files/* _build/.
+
     - name: dialyzer code analysis (mix dialyzer)
       run: mix dialyzer
+
+    - name: move plt files for caching
+      run: mv _build/*.plt plt_files/.
 
     - name: run tests with docker (docker-compose run web mix test)
       run: docker-compose run web mix test
