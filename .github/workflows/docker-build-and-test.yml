@@ -5,13 +5,14 @@ on:
         branches:
             - ian/docker
 
+runs:
+    - using: 'docker'
+    - image: 'Dockerfile'
+    
 jobs:
   build:
 
     name: build and test
-    runs:
-        - using: 'docker'
-        - image: 'Dockerfile'
 
     steps:
     - uses: actions/checkout@v2
