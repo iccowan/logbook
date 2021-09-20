@@ -126,7 +126,8 @@ defmodule Logbook.Books do
     )
   end
 
-  @spec get_book_entry_data_field_type(Books.BookEntryData.t()) :: Book.BookFieldType.t()
+  @spec get_book_entry_data_field_type(Books.BookEntryData.t()) ::
+          Books.BookFieldType.t()
   def get_book_entry_data_field_type(book_entry_data = %Books.BookEntryData{}) do
     book_entry_data
     |> Repo.preload(:book_field)

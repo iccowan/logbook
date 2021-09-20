@@ -421,7 +421,9 @@ defmodule Logbook.BooksTest do
     ]
 
     other_book_field =
-      Helpers.create_book_field!(%{book_group_id: Helpers.create_book_group!().id})
+      Helpers.create_book_field!(%{
+        book_group_id: Helpers.create_book_group!().id
+      })
 
     retrieved_book_fields = Books.get_book_fields_by_group(book_group)
     assert Enum.count(retrieved_book_fields) == Enum.count(book_fields)
@@ -433,8 +435,13 @@ defmodule Logbook.BooksTest do
 
   test "function get_book_entry_data_field_type/1 returns the proper field type for a book entry data" do
     type = Helpers.create_book_field_type!(%{name: "another float"})
-    %Books.BookField{id: book_field_id}= Helpers.create_book_field!(%{type_id: type.id})
-    book_entry_data = Helpers.create_book_entry_data!(%{book_field_id: book_field_id})
+
+    %Books.BookField{id: book_field_id} =
+      Helpers.create_book_field!(%{type_id: type.id})
+
+    book_entry_data =
+      Helpers.create_book_entry_data!(%{book_field_id: book_field_id})
+
     Helpers.create_book_field_type!()
     Helpers.create_book_field_type!()
     Helpers.create_book_field_type!()
