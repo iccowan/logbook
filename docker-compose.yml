@@ -1,6 +1,7 @@
 version: "2"
 services:
     web:
+        container_name: logbook-web
         image: elixir:1.12.3
         build: .
         ports:
@@ -14,7 +15,11 @@ services:
         depends_on:
             - db
     db:
+        container_name: logbook-postgres-db
+        restart: always
         image: postgres:13
+        volumes:
+            - ./.database:/var/lib/postgresql/data
         environment:
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
