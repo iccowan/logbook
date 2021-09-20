@@ -5,7 +5,7 @@ defmodule Logbook.Books do
 
   import Ecto.Query, warn: false
 
-  alias Logbook.{Books, Users}
+  alias Logbook.Books
   alias Logbook.Repo
 
   @spec create_book(map()) :: Books.Book.t()

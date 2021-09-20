@@ -2,7 +2,7 @@ defmodule Logbook.UsersTest do
   use Logbook.DataCase, async: true
   doctest Logbook.Users
 
-  alias Logbook.Users
+  alias Logbook.{Aircraft, Users}
   alias Logbook.UsersTestHelpers, as: Helpers
 
   setup do
@@ -67,6 +67,30 @@ defmodule Logbook.UsersTest do
 
     Enum.each(retrieved_books, fn b ->
       assert Enum.member?(books, b) && b != other_book
+    end)
+  end
+
+  test "function get_aircraft_by_user/1 returns all aircraft of a user" do
+    user = Helpers.create_user!()
+
+    %Aircraft.AircraftType{id: type_id} =
+      Helpers.create_aircraft_type!(%{user_id: user.id})
+
+    Helpers.create_aircraft_type!()
+
+    aircraft = [
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id}),
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id}),
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id})
+    ]
+
+    other_aircraft = Helpers.create_aircraft!()
+
+    retrieved_aircraft = Users.get_aircraft_by_user(user)
+    assert Enum.count(retrieved_aircraft) == Enum.count(aircraft)
+
+    Enum.each(retrieved_aircraft, fn a ->
+      assert Enum.member?(aircraft, a) && a != other_aircraft
     end)
   end
 end
