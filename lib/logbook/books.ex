@@ -109,4 +109,29 @@ defmodule Logbook.Books do
         where: be.book_id == ^book_id
     )
   end
+
+  @spec get_book_groups_by_book(Books.Book.t()) :: [Books.BookGroup.t()]
+  def get_book_groups_by_book(_book = %Books.Book{id: book_id}) do
+    Repo.all(
+      from bg in Books.BookGroup,
+        where: bg.book_id == ^book_id
+    )
+  end
+
+  @spec get_book_fields_by_group(Books.BookGroup.t()) :: [Books.BookField.t()]
+  def get_book_fields_by_group(_book = %Books.BookGroup{id: group_id}) do
+    Repo.all(
+      from bf in Books.BookField,
+        where: bf.book_group_id == ^group_id
+    )
+  end
+
+  @spec get_book_entry_data_field_type(Books.BookEntryData.t()) :: Book.BookFieldType.t()
+  def get_book_entry_data_field_type(book_entry_data = %Books.BookEntryData{}) do
+    book_entry_data
+    |> Repo.preload(:book_field)
+    |> Map.get(:book_field)
+    |> Repo.preload(:book_field_type)
+    |> Map.get(:book_field_type)
+  end
 end
