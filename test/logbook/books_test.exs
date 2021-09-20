@@ -351,4 +351,43 @@ defmodule Logbook.BooksTest do
     %Books.BookGroup{book_id: id} = Repo.get(Books.BookGroup, book_group.id)
     assert id == new_id
   end
+
+  test "function get_books_by_user/1 returns all books of a user" do
+    user = Helpers.create_user!()
+
+    books = [
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id})
+    ]
+
+    other_book = Helpers.create_book!(%{user_id: Helpers.create_user!().id})
+
+    retrieved_books = Books.get_books_by_user(user)
+    assert Enum.count(retrieved_books) == Enum.count(books)
+
+    Enum.each(retrieved_books, fn b ->
+      assert Enum.member?(books, b) && b != other_book
+    end)
+  end
+
+  test "function get_book_entries_by_book/1 returns all book entries for a book" do
+    book = Helpers.create_book!()
+
+    book_entries = [
+      Helpers.create_book_entry!(%{book_id: book.id}),
+      Helpers.create_book_entry!(%{book_id: book.id}),
+      Helpers.create_book_entry!(%{book_id: book.id})
+    ]
+
+    other_book_entry =
+      Helpers.create_book_entry!(%{book_id: Helpers.create_book!().id})
+
+    retrieved_book_entries = Books.get_book_entries_by_book(book)
+    assert Enum.count(retrieved_book_entries) == Enum.count(book_entries)
+
+    Enum.each(retrieved_book_entries, fn be ->
+      assert Enum.member?(book_entries, be) && be != other_book_entry
+    end)
+  end
 end

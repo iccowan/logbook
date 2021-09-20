@@ -5,7 +5,7 @@ defmodule Logbook.Books do
 
   import Ecto.Query, warn: false
 
-  alias Logbook.Books
+  alias Logbook.{Books, Users}
   alias Logbook.Repo
 
   @spec create_book(map()) :: Books.Book.t()
@@ -92,5 +92,21 @@ defmodule Logbook.Books do
     book_entry_data
     |> Books.BookEntryData.changeset(attrs)
     |> Repo.update()
+  end
+
+  @spec get_books_by_user(Users.User.t()) :: [Books.Book.t()]
+  def get_books_by_user(_user = %Users.User{id: user_id}) do
+    Repo.all(
+      from b in Books.Book,
+        where: b.user_id == ^user_id
+    )
+  end
+
+  @spec get_book_entries_by_book(Books.Book.t()) :: [Books.BookEntry.t()]
+  def get_book_entries_by_book(_book = %Books.Book{id: book_id}) do
+    Repo.all(
+      from be in Books.BookEntry,
+        where: be.book_id == ^book_id
+    )
   end
 end
