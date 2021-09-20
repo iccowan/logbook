@@ -39,18 +39,18 @@ jobs:
       run: docker-compose build
 
     - name: audit dependencies (mix deps.audit)
-      run: ./mix deps.audit
+      run: mix deps.audit
 
     - name: sobelow security check (mix sobelow --verbose --exit)
-      run: ./mix sobelow --verbose --exit
+      run: mix sobelow --verbose --exit
 
     - name: credo code analysis (mix credo --all)
-      run: ./mix credo --all --verbose
+      run: mix credo --all --verbose
 
     - name: dialyzer code analysis (mix dialyzer)
-      run: ./mix dialyzer
+      run: mix dialyzer
 
-    - name: run tests with docker (mix test)
+    - name: run tests with docker (./mix test)
       run: ./mix test
 
     - name: notify slack on success
