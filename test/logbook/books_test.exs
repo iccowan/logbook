@@ -352,25 +352,6 @@ defmodule Logbook.BooksTest do
     assert id == new_id
   end
 
-  test "function get_books_by_user/1 returns all books of a user" do
-    user = Helpers.create_user!()
-
-    books = [
-      Helpers.create_book!(%{user_id: user.id}),
-      Helpers.create_book!(%{user_id: user.id}),
-      Helpers.create_book!(%{user_id: user.id})
-    ]
-
-    other_book = Helpers.create_book!(%{user_id: Helpers.create_user!().id})
-
-    retrieved_books = Books.get_books_by_user(user)
-    assert Enum.count(retrieved_books) == Enum.count(books)
-
-    Enum.each(retrieved_books, fn b ->
-      assert Enum.member?(books, b) && b != other_book
-    end)
-  end
-
   test "function get_book_entries_by_book/1 returns all book entries for a book" do
     book = Helpers.create_book!()
 

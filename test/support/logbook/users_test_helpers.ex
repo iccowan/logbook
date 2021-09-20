@@ -4,6 +4,10 @@ defmodule Logbook.UsersTestHelpers do
   """
 
   alias Logbook.Users
+  alias Logbook.{BooksTestHelpers}
+
+  defdelegate create_book!(overrides \\ %{}), to: BooksTestHelpers
+  defdelegate create_book(overrides \\ %{}), to: BooksTestHelpers
 
   def create_user(overrides \\ %{}) do
     %{

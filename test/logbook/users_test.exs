@@ -50,4 +50,23 @@ defmodule Logbook.UsersTest do
     %Users.User{email: email} = Repo.get(Users.User, user.id)
     assert email == "another@gmail.com"
   end
+
+  test "function get_books_by_user/1 returns all books of a user" do
+    user = Helpers.create_user!()
+
+    books = [
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id})
+    ]
+
+    other_book = Helpers.create_book!(%{user_id: Helpers.create_user!().id})
+
+    retrieved_books = Users.get_books_by_user(user)
+    assert Enum.count(retrieved_books) == Enum.count(books)
+
+    Enum.each(retrieved_books, fn b ->
+      assert Enum.member?(books, b) && b != other_book
+    end)
+  end
 end

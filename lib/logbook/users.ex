@@ -5,7 +5,7 @@ defmodule Logbook.Users do
 
   import Ecto.Query, warn: false
 
-  alias Logbook.Users
+  alias Logbook.{Books, Users}
   alias Logbook.Repo
 
   @spec create_user(map()) :: Users.User.t()
@@ -20,5 +20,13 @@ defmodule Logbook.Users do
     user
     |> Users.User.changeset(attrs)
     |> Repo.update()
+  end
+
+  @spec get_books_by_user(Users.User.t()) :: [Books.Book.t()]
+  def get_books_by_user(_user = %Users.User{id: user_id}) do
+    Repo.all(
+      from b in Books.Book,
+        where: b.user_id == ^user_id
+    )
   end
 end
