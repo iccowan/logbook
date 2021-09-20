@@ -38,32 +38,20 @@ jobs:
     - name: build docker container
       run: docker-compose build
 
-    - name: copy compiled files from docker container
-      run: |
-           docker create -ti --name web elixir:1.12.3 bash
-           docker cp web:/app/. .
-           docker rm -f web
-
-    - name: set up elixir for non-docker checks
-      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
-      with:
-        elixir-version: '1.12.3' # Define the elixir version [required]
-        otp-version: '24.0' # Define the OTP version [required]
-
     - name: audit dependencies (mix deps.audit)
-      run: mix deps.audit
+      run: ./mix deps.audit
 
     - name: sobelow security check (mix sobelow --verbose --exit)
-      run: mix sobelow --verbose --exit
+      run: ./mix sobelow --verbose --exit
 
     - name: credo code analysis (mix credo --all)
-      run: mix credo --all --verbose
+      run: ./mix credo --all --verbose
 
     - name: dialyzer code analysis (mix dialyzer)
-      run: mix dialyzer
+      run: ./mix dialyzer
 
-    - name: run tests with docker (docker-compose run web mix test)
-      run: docker-compose run web mix test
+    - name: run tests with docker (mix test)
+      run: ./mix test
 
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
