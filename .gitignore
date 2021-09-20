@@ -39,3 +39,6 @@ npm-debug.log
 # Ignore plt files
 /priv/plts/*.plt
 /priv/plts/*.plt.hash
+
+# Ignore the database files from docker
+.database

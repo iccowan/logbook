@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" == "build" ];
+then
+    echo "Building docker containers..."
+    docker-compose build
+fi
+
+if [ "$1" == "stop" ];
+then
+    echo "Shutting down docker containers..."
+    docker-compose down
+    echo "Docker containers are now down"
+fi
+
+if [ "$1" != "stop" ];
+then
+    echo "Running docker containers in the background..."
+    docker-compose up --detach
+    echo "Running! Use the command \`./docker-dev stop\` when you\'re finished"
+fi
