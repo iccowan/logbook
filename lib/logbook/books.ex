@@ -50,21 +50,6 @@ defmodule Logbook.Books do
     |> Repo.update()
   end
 
-  @spec create_book_field_type(map()) :: Books.BookFieldType.t()
-  def create_book_field_type(attrs \\ %{}) do
-    %Books.BookFieldType{}
-    |> Books.BookFieldType.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @spec update_book_field_type(Books.BookFieldType.t(), map()) ::
-          Books.BookFieldType.t()
-  def update_book_field_type(book_field_type, attrs \\ %{}) do
-    book_field_type
-    |> Books.BookFieldType.changeset(attrs)
-    |> Repo.update()
-  end
-
   @spec create_book_group(map()) :: Books.BookGroup.t()
   def create_book_group(attrs \\ %{}) do
     %Books.BookGroup{}
@@ -92,6 +77,18 @@ defmodule Logbook.Books do
     book_entry_data
     |> Books.BookEntryData.changeset(attrs)
     |> Repo.update()
+  end
+
+  @spec get_book_field_types() :: [Books.BookFieldType.t()]
+  def get_book_field_types() do
+    Repo.all(
+      from bft in Books.BookFieldType,
+        select: %{
+          id: bft.id,
+          name: bft.name,
+          desc: bft.desc
+        }
+    )
   end
 
   @spec get_book_entries_by_book(Books.Book.t()) :: [Books.BookEntry.t()]

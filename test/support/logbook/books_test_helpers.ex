@@ -3,6 +3,7 @@ defmodule Logbook.BooksTestHelpers do
   Test helpers for books
   """
 
+  alias Logbook.Repo
   alias Logbook.Books
   alias Logbook.{AircraftTestHelpers, AirportsTestHelpers, UsersTestHelpers}
 
@@ -74,7 +75,7 @@ defmodule Logbook.BooksTestHelpers do
     %{
       book_field_id: book_field.id,
       book_entry_id: create_book_entry!().id,
-      value: %{book_field.book_field_type.id => 2.3}
+      value: %{"val" => 3}
     }
     |> Map.merge(overrides)
     |> Books.create_book_entry_data()
@@ -95,10 +96,13 @@ defmodule Logbook.BooksTestHelpers do
   end
 
   def create_book_field(overrides \\ %{}) do
+    [_book_type = %Books.BookFieldType{id: book_type_id} | _types] =
+      Repo.all(Books.BookFieldType)
+
     %{
       name: "Total Time",
       desc: "Total time for the pilot",
-      type_id: create_book_field_type!().id,
+      type_id: book_type_id,
       book_group_id: create_book_group!().id
     }
     |> Map.merge(overrides)
@@ -119,27 +123,31 @@ defmodule Logbook.BooksTestHelpers do
     |> elem(1)
   end
 
-  def create_book_field_type(overrides \\ %{}) do
-    %{
-      name: "float",
-      desc: "Floating decimal point number"
-    }
-    |> Map.merge(overrides)
-    |> Books.create_book_field_type()
-  end
+  def create_book_field_types(overrides \\ %{}) do
+    book_field_types = [
+      %Books.BookFieldType{
+        name: "Integer",
+        desc: "Whole Integer Number"
+      },
+      %Books.BookFieldType{
+        name: "Decimal",
+        desc: "Decimal Number"
+      },
+      %Books.BookFieldType{
+        name: "Short Text",
+        desc: "Short Text"
+      },
+      %Books.BookFieldType{
+        name: "Long Text",
+        desc: "Long Text"
+      }
+    ]
 
-  def create_book_field_type!(overrides \\ %{}) do
-    create_book_field_type(overrides)
-    |> elem(1)
-  end
+    Enum.each(book_field_types, fn type ->
+      Repo.insert!(type)
+    end)
 
-  def update_book_field_type(book_field_type, overrides \\ %{}) do
-    Books.update_book_field_type(book_field_type, overrides)
-  end
-
-  def update_book_field_type!(book_field_type, overrides \\ %{}) do
-    update_book_field_type(book_field_type, overrides)
-    |> elem(1)
+    Repo.all(Books.BookFieldType)
   end
 
   def create_book_group(overrides \\ %{}) do

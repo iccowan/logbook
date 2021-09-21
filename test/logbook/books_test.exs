@@ -4,9 +4,12 @@ defmodule Logbook.BooksTest do
 
   alias Logbook.{Airports, Aircraft, Books, Users}
   alias Logbook.BooksTestHelpers, as: Helpers
+  alias Logbook.Repo
 
   setup do
     user = Helpers.create_user!()
+    field_types = Helpers.create_book_field_types()
+    [first_type | _types] = field_types
 
     %Aircraft.AircraftType{id: at_id} =
       Helpers.create_aircraft_type!(%{user_id: user.id})
@@ -25,12 +28,11 @@ defmodule Logbook.BooksTest do
         apt_to_id: airport_arr.id
       })
 
-    book_field_type = Helpers.create_book_field_type!()
     book_group = Helpers.create_book_group!(%{book_id: book.id})
 
     book_field =
       Helpers.create_book_field!(%{
-        type_id: book_field_type.id,
+        type_id: first_type.id,
         book_group_id: book_group.id
       })
 
@@ -45,7 +47,7 @@ defmodule Logbook.BooksTest do
       book: book,
       book_entry: book_entry,
       book_entry_data: book_entry_data,
-      book_field_type: book_field_type,
+      book_field_types: field_types,
       book_field: book_field,
       book_group: book_group,
       user: user,
@@ -72,14 +74,6 @@ defmodule Logbook.BooksTest do
   } do
     assert Repo.exists?(
              from b in Books.BookEntryData, where: b.id == ^book_entry_data.id
-           )
-  end
-
-  test "creating a new book_field_type creates the book_field_type", %{
-    book_field_type: book_field_type
-  } do
-    assert Repo.exists?(
-             from b in Books.BookFieldType, where: b.id == ^book_field_type.id
            )
   end
 
@@ -211,6 +205,129 @@ defmodule Logbook.BooksTest do
     assert success == :error
   end
 
+  test "book_entry_data integer value must be the correct type on inital insert",
+       %{book_field_types: [field_type | _types]} do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 1.2}
+      })
+
+    assert success == :error
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hello, world"}
+      })
+
+    assert success == :error
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 2}
+      })
+
+    assert success == :ok
+  end
+
+  test "book_entry_data decimal value must be the correct type on inital insert",
+       %{book_field_types: [_integer, field_type | _types]} do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 2}
+      })
+
+    assert success == :ok
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hello, world"}
+      })
+
+    assert success == :error
+
+    {success, data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 1.2}
+      })
+
+    assert success == :ok
+  end
+
+  test "book_entry_data short text value must be the correct type on inital insert",
+       %{book_field_types: [_integer, _decimal, field_type | _types]} do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 2}
+      })
+
+    assert success == :error
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hello, world"}
+      })
+
+    assert success == :ok
+
+    {success, data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 1.2}
+      })
+
+    assert success == :error
+  end
+
+  test "book_entry_data long text value must be the correct type on inital insert",
+       %{
+         book_field_types: [
+           _integer,
+           _decimal,
+           _short_text,
+           field_type | _types
+         ]
+       } do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 2}
+      })
+
+    assert success == :error
+
+    {success, _data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hello, world"}
+      })
+
+    assert success == :ok
+
+    {success, data} =
+      Helpers.create_book_entry_data(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 1.2}
+      })
+
+    assert success == :error
+  end
+
   test "book_entry_data book_field_id updates on update", %{
     book_entry_data: book_entry_data
   } do
@@ -239,13 +356,121 @@ defmodule Logbook.BooksTest do
     book_entry_data: book_entry_data
   } do
     Helpers.update_book_entry_data(book_entry_data, %{
-      value: %{"0" => "new data"}
+      value: %{"val" => 10}
     })
 
     %Books.BookEntryData{value: value} =
       Repo.get(Books.BookEntryData, book_entry_data.id)
 
-    assert value == %{"0" => "new data"}
+    assert value == %{"val" => 10}
+  end
+
+  test "book_entry_data integer value must be the correct type on update", %{
+    book_field_types: [field_type | _types]
+  } do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    data =
+      Helpers.create_book_entry_data!(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 0}
+      })
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 1.2}})
+
+    assert success == :error
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => "hello, world"}})
+
+    assert success == :error
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 2}})
+
+    assert success == :ok
+  end
+
+  test "book_entry_data decimal value must be the correct type on update", %{
+    book_field_types: [_integer, field_type | _types]
+  } do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    data =
+      Helpers.create_book_entry_data!(%{
+        book_field_id: book_field.id,
+        value: %{"val" => 0}
+      })
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 1.2}})
+
+    assert success == :ok
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => "hello, world"}})
+
+    assert success == :error
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 2}})
+
+    assert success == :ok
+  end
+
+  test "book_entry_data short text value must be the correct type on update", %{
+    book_field_types: [_integer, _decimal, field_type | _types]
+  } do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    data =
+      Helpers.create_book_entry_data!(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hi"}
+      })
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 1.2}})
+
+    assert success == :error
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => "hello, world"}})
+
+    assert success == :ok
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 2}})
+
+    assert success == :error
+  end
+
+  test "book_entry_data long text value must be the correct type on update", %{
+    book_field_types: [_integer, _decimal, _short_text, field_type | _types]
+  } do
+    book_field = Helpers.create_book_field!(%{type_id: field_type.id})
+
+    data =
+      Helpers.create_book_entry_data!(%{
+        book_field_id: book_field.id,
+        value: %{"val" => "hi"}
+      })
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 1.2}})
+
+    assert success == :error
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => "hello, world"}})
+
+    assert success == :ok
+
+    {success, _book_field_u} =
+      Helpers.update_book_entry_data(data, %{value: %{"val" => 2}})
+
+    assert success == :error
   end
 
   test "book_field name is required" do
@@ -280,13 +505,6 @@ defmodule Logbook.BooksTest do
     assert desc == "Brand new desc"
   end
 
-  test "book_field type_id updates on update", %{book_field: book_field} do
-    %Books.BookFieldType{id: new_id} = Helpers.create_book_field_type!()
-    Helpers.update_book_field(book_field, %{type_id: new_id})
-    %Books.BookField{type_id: id} = Repo.get(Books.BookField, book_field.id)
-    assert id == new_id
-  end
-
   test "book_field book_group_id updates on update", %{book_field: book_field} do
     %Books.BookGroup{id: new_id} = Helpers.create_book_group!()
     Helpers.update_book_field(book_field, %{book_group_id: new_id})
@@ -295,38 +513,6 @@ defmodule Logbook.BooksTest do
       Repo.get(Books.BookField, book_field.id)
 
     assert id == new_id
-  end
-
-  test "book_field_type name is required" do
-    {success, _book_field_type} = Helpers.create_book_field_type(%{name: nil})
-    assert success == :error
-  end
-
-  test "book_field_type desc is not required" do
-    {success, _book_field_type} = Helpers.create_book_field_type(%{desc: nil})
-    assert success == :ok
-  end
-
-  test "book_field_type name updates on update", %{
-    book_field_type: book_field_type
-  } do
-    Helpers.update_book_field_type(book_field_type, %{name: "A new name"})
-
-    %Books.BookFieldType{name: name} =
-      Repo.get(Books.BookFieldType, book_field_type.id)
-
-    assert name == "A new name"
-  end
-
-  test "book_field_type desc updates on update", %{
-    book_field_type: book_field_type
-  } do
-    Helpers.update_book_field_type(book_field_type, %{desc: "A new desc"})
-
-    %Books.BookFieldType{desc: desc} =
-      Repo.get(Books.BookFieldType, book_field_type.id)
-
-    assert desc == "A new desc"
   end
 
   test "book_group name is required" do
@@ -414,18 +600,15 @@ defmodule Logbook.BooksTest do
     end)
   end
 
-  test "function get_book_entry_data_field_type/1 returns the proper field type for a book entry data" do
-    type = Helpers.create_book_field_type!(%{name: "another float"})
+  test "function get_book_entry_data_field_type/1 returns the proper field type for a book entry data",
+       %{book_field_types: book_field_types} do
+    [type | _other_types] = book_field_types
 
     %Books.BookField{id: book_field_id} =
       Helpers.create_book_field!(%{type_id: type.id})
 
     book_entry_data =
       Helpers.create_book_entry_data!(%{book_field_id: book_field_id})
-
-    Helpers.create_book_field_type!()
-    Helpers.create_book_field_type!()
-    Helpers.create_book_field_type!()
 
     retrieved_type = Books.get_book_entry_data_field_type(book_entry_data)
     assert retrieved_type == type
