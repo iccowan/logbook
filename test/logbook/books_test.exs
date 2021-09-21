@@ -351,4 +351,83 @@ defmodule Logbook.BooksTest do
     %Books.BookGroup{book_id: id} = Repo.get(Books.BookGroup, book_group.id)
     assert id == new_id
   end
+
+  test "function get_book_entries_by_book/1 returns all book entries for a book" do
+    book = Helpers.create_book!()
+
+    book_entries = [
+      Helpers.create_book_entry!(%{book_id: book.id}),
+      Helpers.create_book_entry!(%{book_id: book.id}),
+      Helpers.create_book_entry!(%{book_id: book.id})
+    ]
+
+    other_book_entry =
+      Helpers.create_book_entry!(%{book_id: Helpers.create_book!().id})
+
+    retrieved_book_entries = Books.get_book_entries_by_book(book)
+    assert Enum.count(retrieved_book_entries) == Enum.count(book_entries)
+
+    Enum.each(retrieved_book_entries, fn be ->
+      assert Enum.member?(book_entries, be) && be != other_book_entry
+    end)
+  end
+
+  test "function get_book_groups_by_book/1 returns all book groups for a book" do
+    book = Helpers.create_book!()
+
+    book_groups = [
+      Helpers.create_book_group!(%{book_id: book.id}),
+      Helpers.create_book_group!(%{book_id: book.id}),
+      Helpers.create_book_group!(%{book_id: book.id})
+    ]
+
+    other_book_group =
+      Helpers.create_book_group!(%{book_id: Helpers.create_book!().id})
+
+    retrieved_book_groups = Books.get_book_groups_by_book(book)
+    assert Enum.count(retrieved_book_groups) == Enum.count(book_groups)
+
+    Enum.each(retrieved_book_groups, fn bg ->
+      assert Enum.member?(book_groups, bg) && bg != other_book_group
+    end)
+  end
+
+  test "function get_book_fields_by_group/1 returns all book fields for a book group" do
+    book_group = Helpers.create_book_group!()
+
+    book_fields = [
+      Helpers.create_book_field!(%{book_group_id: book_group.id}),
+      Helpers.create_book_field!(%{book_group_id: book_group.id}),
+      Helpers.create_book_field!(%{book_group_id: book_group.id})
+    ]
+
+    other_book_field =
+      Helpers.create_book_field!(%{
+        book_group_id: Helpers.create_book_group!().id
+      })
+
+    retrieved_book_fields = Books.get_book_fields_by_group(book_group)
+    assert Enum.count(retrieved_book_fields) == Enum.count(book_fields)
+
+    Enum.each(retrieved_book_fields, fn bf ->
+      assert Enum.member?(book_fields, bf) && bf != other_book_field
+    end)
+  end
+
+  test "function get_book_entry_data_field_type/1 returns the proper field type for a book entry data" do
+    type = Helpers.create_book_field_type!(%{name: "another float"})
+
+    %Books.BookField{id: book_field_id} =
+      Helpers.create_book_field!(%{type_id: type.id})
+
+    book_entry_data =
+      Helpers.create_book_entry_data!(%{book_field_id: book_field_id})
+
+    Helpers.create_book_field_type!()
+    Helpers.create_book_field_type!()
+    Helpers.create_book_field_type!()
+
+    retrieved_type = Books.get_book_entry_data_field_type(book_entry_data)
+    assert retrieved_type == type
+  end
 end

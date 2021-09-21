@@ -62,8 +62,8 @@ jobs:
     - name: dialyzer code analysis (mix dialyzer)
       run: mix dialyzer
 
-    - name: run tests with docker (docker-compose run web mix test)
-      run: docker-compose run web mix test
+    - name: run tests with docker (./mix test)
+      run: ./mix test
 
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}

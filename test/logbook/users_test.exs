@@ -2,7 +2,7 @@ defmodule Logbook.UsersTest do
   use Logbook.DataCase, async: true
   doctest Logbook.Users
 
-  alias Logbook.Users
+  alias Logbook.{Aircraft, Users}
   alias Logbook.UsersTestHelpers, as: Helpers
 
   setup do
@@ -49,5 +49,48 @@ defmodule Logbook.UsersTest do
     Helpers.update_user(user, %{email: "another@gmail.com"})
     %Users.User{email: email} = Repo.get(Users.User, user.id)
     assert email == "another@gmail.com"
+  end
+
+  test "function get_books_by_user/1 returns all books of a user" do
+    user = Helpers.create_user!()
+
+    books = [
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id}),
+      Helpers.create_book!(%{user_id: user.id})
+    ]
+
+    other_book = Helpers.create_book!(%{user_id: Helpers.create_user!().id})
+
+    retrieved_books = Users.get_books_by_user(user)
+    assert Enum.count(retrieved_books) == Enum.count(books)
+
+    Enum.each(retrieved_books, fn b ->
+      assert Enum.member?(books, b) && b != other_book
+    end)
+  end
+
+  test "function get_aircraft_by_user/1 returns all aircraft of a user" do
+    user = Helpers.create_user!()
+
+    %Aircraft.AircraftType{id: type_id} =
+      Helpers.create_aircraft_type!(%{user_id: user.id})
+
+    Helpers.create_aircraft_type!()
+
+    aircraft = [
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id}),
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id}),
+      Helpers.create_aircraft!(%{aircraft_type_id: type_id})
+    ]
+
+    other_aircraft = Helpers.create_aircraft!()
+
+    retrieved_aircraft = Users.get_aircraft_by_user(user)
+    assert Enum.count(retrieved_aircraft) == Enum.count(aircraft)
+
+    Enum.each(retrieved_aircraft, fn a ->
+      assert Enum.member?(aircraft, a) && a != other_aircraft
+    end)
   end
 end
