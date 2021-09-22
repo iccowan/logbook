@@ -7,10 +7,14 @@ jobs:
 
     name: build and test
     runs-on: ubuntu-latest
+    env:
+        POSTGRES_USER: postgres_test
+        POSTGRES_PASSWORD: postgres_test
+        POSTGRES_HOST: localhost
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: notify slack that build has initiated
       if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod' }}
       uses: rtCamp/action-slack-notify@v2
@@ -26,11 +30,11 @@ jobs:
       uses: Harmon758/postgresql-action@v1.0.0
       with:
         # POSTGRES_DB - name for the default database that is created
-        postgresql db: logbook_dev
+        postgresql db: logbook_test
         # POSTGRES_USER - create the specified user with superuser power
-        postgresql user: postgres
+        postgresql user: ${{ env.POSTGRES_USER }}
         # POSTGRES_PASSWORD - superuser password
-        postgresql password: postgres
+        postgresql password: ${{ env.POSTGRES_PASSWORD }}
 
     - name: load/save cache
       uses: actions/cache@v2.1.6
@@ -44,7 +48,7 @@ jobs:
         # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
         restore-keys: |
             ${{ runner.os }}-mix-
-
+                
     - name: set up elixir
       uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
       with:
@@ -53,7 +57,7 @@ jobs:
 
     - name: set up hex (mix local.hex --force)
       run: mix local.hex --force
-      
+
     - name: set up rebar (mix local.rebar --force)
       run: mix local.rebar --force
 
@@ -74,7 +78,7 @@ jobs:
 
     - name: run tests (mix test)
       run: mix test
-      
+
     - name: notify slack on success
       if: ${{ success() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
       uses: rtCamp/action-slack-notify@v2
@@ -83,7 +87,7 @@ jobs:
         SLACK_COLOR: ${{ job.status }}
         SLACK_TITLE: ':white_check_mark: Build PASSING'
         SLACK_FOOTER: 'git@github.com:iccowan/logbook.git'
-    
+
     - name: notify slack on fail
       if: ${{ failure() && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prod') }}
       uses: rtCamp/action-slack-notify@v2

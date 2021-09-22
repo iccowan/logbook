@@ -37,8 +37,7 @@ npm-debug.log
 .envrc
 
 # Ignore plt files
-/priv/plts/*.plt
-/priv/plts/*.plt.hash
+/priv/plts/*
 
 # Ignore the database files from docker
 .database

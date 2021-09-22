@@ -73,7 +73,12 @@ defmodule Logbook.MixProject do
       ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "format --check-formatted",
+        "test"
+      ],
       "commit.prepare": ["quality", "test"]
     ]
   end
